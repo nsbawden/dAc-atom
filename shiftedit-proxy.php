@@ -9,8 +9,8 @@ Edit the username and password below
 
 //config
 $host = 'localhost';
-$username = $_ENV['SHIFTEDITUSR']; //username or ftp username
-$password = $_ENV['SHIFTEDITPW']; //password or ftp password Laura secure
+$username = $_ENV('SHIFTEDITUSR'); //username or ftp username
+$password = $_ENV('SHIFTEDITPW'); //password or ftp password
 $dir = dirname(__FILE__).'/'; //path to files e.g. dirname(__FILE__).'/';
 $server_type = 'local'; //local, ftp or sftp. local requires webserver to have write permissions to files.
 $pasv = true; //pasv mode for ftp
@@ -78,7 +78,7 @@ if( $username and !$_SESSION['shiftedit_logged_in'] ){
     if( $username!==$_POST['user'] or sha1($password)!==$_POST['pass'] ){
         //delay to protect against brute force attack
         sleep(1);
-        die('{"success":false,"error":"Login incorrect","user":"' . $username . '"}');
+        die('{"success":false,"error":"Login incorrect"}');
     }
 
     $_SESSION['shiftedit_logged_in'] = true;
