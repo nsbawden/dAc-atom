@@ -11,7 +11,7 @@ Edit the username and password below
 $host = 'localhost';
 $username = $_ENV['SHIFTEDITUSR']; //username or ftp username
 $password = $_ENV['SHIFTEDITPW']; //password or ftp password Laura secure
-$dir = dirname(__FILE__).'/../'; //path to files e.g. dirname(__FILE__).'/';
+$dir = dirname(__FILE__).'/'; //path to files e.g. dirname(__FILE__).'/';
 $server_type = 'local'; //local, ftp or sftp. local requires webserver to have write permissions to files.
 $pasv = true; //pasv mode for ftp
 $port = 21; //usually 21 for ftp and 22 for sftp
