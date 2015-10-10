@@ -78,7 +78,7 @@ if( $username and !$_SESSION['shiftedit_logged_in'] ){
     if( $username!==$_POST['user'] or sha1($password)!==$_POST['pass'] ){
         //delay to protect against brute force attack
         sleep(1);
-        die('{"success":false,"error":"Login incorrect","user":{$_ENV['SHIFTEDITUSR']}}');
+        die('{"success":false,"error":"Login incorrect","user":"' . $_ENV['SHIFTEDITUSR'] . '"}');
     }
 
     $_SESSION['shiftedit_logged_in'] = true;
