@@ -1,4 +1,4 @@
-# js-inheritable-class
+# dAc-atom
 JavaScript Inheritable Class that is Google Closure Compiler Proof
 
 Inspired by John Resig's [Simple JavaScript Inheritance Class](http://ejohn.org/blog/simple-javascript-inheritance/) except that it places non-function extension properties on the main object instead of the prototype, has a built-in mechanism for extending the object when newed, and is slightly refactored to pass through advanced google closure compilation successfully.
