@@ -11,8 +11,9 @@ var hereMap = {
 	electrons: 'electrons',
 	energy: 'energy',
 	destroyed: 'destroyed',
+	superDestroyed: 'superDestroyed',
 	explode: 'explode',
-
+	
 	// QUnit
 	urlParams:"urlParams",
 	isLocal:"isLocal",
@@ -56,7 +57,7 @@ var hereMap = {
 	raises:"raises",
 	diff:"diff",
 	init:"init",
-
+	
 	// QUnit.config
 	queue:"queue",
 	blocking:"blocking",
@@ -128,13 +129,13 @@ function zag(o, keys) { // Output
 
 window['zigMap'] = function(o) {
 	var k, ot = '';
-
+	
 	for (k in o) {
 		if (!o.hasOwnProperty(k))
 			continue;
 		ot += '\t' + k + ':"' + k + '",\n';
-	}
-
+	}	
+	
 	return '\n' + ot.substr(0, ot.length-2) + '\n';
 };
 
@@ -155,3 +156,4 @@ window['zigMap'] = function(o) {
 // }
 
 zagMap(hereMap);
+
