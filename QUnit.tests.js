@@ -1,10 +1,10 @@
 /*global QUnit F deepEqual QUint ok Atom zig*/
 
-(function($, window, undefined) {
-
+(function() {
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Google Closure Compiler Magic
-
+	
 	var QUnit = zig(window['QUnit']);
 
 
@@ -77,7 +77,7 @@
 		electrons: 22,
 
 		init: function(prop) {
-			$.extend(this, prop);
+			this._base(prop);
 		},
 
 		explode: function() {
@@ -85,28 +85,57 @@
 		}
 	});
 
+	var HugeAtom = BigAtom.extend({
+		neutrons: 50,
+		protons: 20,
+
+		explode: function() {
+			this._base();
+			this.superDestroyed = true;
+		}
+	});
+
 
 	var a1 = new BigAtom({
 		energy: 42
+	});
+	
+	var a2 = new HugeAtom({
+		energy: 420
 	});
 
 	QUnit.test("bvt - instanceof", function(p) {
 		p.ok(a1 instanceof Atom, 'Passed instanceof Atom');
 		p.ok(a1 instanceof BigAtom, 'Passed instanceof BigAtom');
+		p.ok(a2 instanceof HugeAtom, 'Passed instanceof HugeAtom');
 	});
 
-	QUnit.test("bvt - has properties", function(p) {
-		p.ok(a1.electrons === 22, 'Passed has primary property 22 electrons');
+	QUnit.test("bvt - BigAtom has properties", function(p) {
+		p.ok(a1.protons === 2, 'Passed has primary property 22 electrons');
 		p.ok(a1.energy === 42, 'Passed has extended property 42 energy');
 	});
 
-	QUnit.test("bvt - stringify", function(p) {
+	QUnit.test("bvt - BigAtom stringify", function(p) {
 		p.ok(a1.stringify() === '{"neutrons":5,"protons":2,"electrons":22,"energy":42}', a1.stringify());
 	});
 
-	QUnit.test("bvt - child methods", function(p) {
+	QUnit.test("bvt - BigAtom child methods", function(p) {
 		a1.explode();
 		p.ok(a1.destroyed === true, a1.destroyed);
+	});
+
+	QUnit.test("bvt - HugeAtom has properties", function(p) {
+		p.ok(a2.protons === 20, a2.protons);
+		p.ok(a2.energy === 420, a2.energy);
+	});
+
+	QUnit.test("bvt - HugeAtom child methods", function(p) {
+		a2.explode();
+		p.ok(a2.destroyed === true && a2.superDestroyed === true, a2.destroyed + ', ' + a2.superDestroyed);
+	});
+
+	QUnit.test("bvt - HugeAtom stringify", function(p) {
+		p.ok(a2.stringify() === '{"neutrons":50,"protons":20,"energy":420,"destroyed":true,"superDestroyed":true}', a2.stringify());
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,4 +336,4 @@
 		return a.childNodes[0] && a.childNodes[0].nodeValue === m[3];
 	};
 
-})(jQuery, window);
+})();
