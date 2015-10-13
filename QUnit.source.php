@@ -2,7 +2,7 @@
 	//header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 	//header("Expires: Thu, 1 Jan 1970 01:00:00 GMT"); // Date in the past
 	//header('Content-type: text/JavaScript');
-
+	
 //
 // To debug add ?cache=false&scuba=true to the url
 //
@@ -44,11 +44,11 @@
  *   ->useClosureLibrary()
  *   ->cacheDir("/tmp/js-cache/")
  *   ->write();
- *
+ * 
  * See http://code.google.com/closure/compiler/docs/api-ref.html for more
  * details on the compiler options.
  */
-
+ 
 class PhpClosure {
 
   var $_srcs = array();
@@ -60,6 +60,7 @@ class PhpClosure {
   var $_encrypt_strings = true;
   var $_cache_dir = "";
   var $_code_url_prefix = "";
+  var $_externs = "QUnit.externs.js";
 
   function PhpClosure() { }
 
@@ -150,7 +151,7 @@ class PhpClosure {
     $this->_mode = "SIMPLE_OPTIMIZATIONS";
     return $this;
   }
-
+  
   /**
    * Sets the compilation mode to advanced optimizations (recommended).
    */
@@ -214,11 +215,11 @@ class PhpClosure {
         // No recompile needed, but see if we can send a 304 to the browser.
         $cache_mtime = filemtime($cache_file);
         $etag = md5_file($cache_file);
-        header("Last-Modified: ".gmdate("D, d M Y H:i:s", $cache_mtime)." GMT");
-        header("Etag: $etag");
-        if (@strtotime(@$_SERVER['HTTP_IF_MODIFIED_SINCE']) == $cache_mtime ||
-            @trim(@$_SERVER['HTTP_IF_NONE_MATCH']) == $etag) {
-          header("HTTP/1.1 304 Not Modified");
+        header("Last-Modified: ".gmdate("D, d M Y H:i:s", $cache_mtime)." GMT"); 
+        header("Etag: $etag"); 
+        if (@strtotime(@$_SERVER['HTTP_IF_MODIFIED_SINCE']) == $cache_mtime || 
+            @trim(@$_SERVER['HTTP_IF_NONE_MATCH']) == $etag) { 
+          header("HTTP/1.1 304 Not Modified"); 
         } else {
           	// Read the cache file and send it to the client.
           	$this->_jqWrap(file_get_contents($cache_file));
@@ -240,7 +241,7 @@ class PhpClosure {
 	}
 
   // ----- Privates -----
-
+  
   function _isRecompileNeeded($cache_file) {
     // If there is no cache file, we obviously need to recompile.
     if ($_GET['cache'] === 'false' || !file_exists($cache_file)) return true;
@@ -286,7 +287,7 @@ class PhpClosure {
           break;
       }
     }
-
+    
     $result = "";
     if ($this->_debug) {
       $result = "if(window.console&&window.console.log){\r\n" .
@@ -306,7 +307,7 @@ class PhpClosure {
 
     return $result;
   }
-
+    
   function _printWarnings($warnings, $level="log") {
     $result = "";
     foreach ($warnings as $warning) {
@@ -352,8 +353,8 @@ class PhpClosure {
       }
     } else {
       $params["js_code"] = $this->_readSources();
-      if (file_exists("externs/jQueryExterns.js"))
-	      $params["js_externs"] = file_get_contents("externs/jQueryExterns.js");
+      if (file_exists($this->_externs))
+	      $params["js_externs"] = file_get_contents($this->_externs);
     }
     $params["compilation_level"] = $this->_mode;
     $params["output_format"] = "xml";
@@ -390,9 +391,9 @@ class PhpClosure {
       fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");
       fputs($fp, "Content-length: ". strlen($data) ."\r\n");
       fputs($fp, "Connection: close\r\n\r\n");
-      fputs($fp, $data);
+      fputs($fp, $data); 
 
-      $result = "";
+      $result = ""; 
       while (!feof($fp)) {
         $result .= fgets($fp, 128);
       }
@@ -440,7 +441,7 @@ class PhpClosure {
     }
     return $tree;
   }
-
+  
 }
 
 /** LZW compression
@@ -462,7 +463,7 @@ function old_lzw_compress($string) {
                         $word = $x;
                 }
         }
-
+        
         // convert codes to binary string
         $dictionary_count = 256;
         $bits = 8; // ceil(log($dictionary_count, 2))
@@ -499,7 +500,7 @@ function lzw_compress($string) {
                         $word = $x;
                 }
         }
-
+       
         // convert codes to binary string
         $dictionary_count = 256;
         $bits = 8; // ceil(log($dictionary_count, 2))
@@ -543,7 +544,7 @@ $c = new PhpClosure();
 
 if ($_GET['scuba'] !== 'true')
 	$c->hideDebugInfo();
-
+	
 if (!file_exists(sys_get_temp_dir() . "/js-cache/"))
 	@mkdir(sys_get_temp_dir() . "/js-cache/");
 
@@ -552,9 +553,5 @@ $c
 	->add("QUnit.zag.js")
 	->add("QUnit.tests.js")
 	->advancedMode()
-//	->useClosureLibrary()
 	->cacheDir(sys_get_temp_dir() . "/js-cache/")
-	//->verbose()
-	//->quiet()
-	//->hideDebugInfo()
 	->write();
