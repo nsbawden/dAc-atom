@@ -1,14 +1,7 @@
 <?php
-	//header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-	//header("Expires: Thu, 1 Jan 1970 01:00:00 GMT"); // Date in the past
-	//header('Content-type: text/JavaScript');
-	
-//
-// To debug add ?cache=false&scuba=true to the url
-//
-
 /**
  * Copyright 2010 Daniel Pupius (http://code.google.com/p/php-closure/)
+ * Copyright 2015 dArtagnans Code (http://code.playnexus.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,8 +54,34 @@ class PhpClosure {
   var $_cache_dir = "";
   var $_code_url_prefix = "";
   var $_externs = "QUnit.externs.js";
+  var $_copyright = <<<EOT
+// Copyright 2010 Daniel Pupius (http://code.google.com/p/php-closure/)
+// Copyright 2015 dArtagnans Code (http://code.playnexus.com/)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+EOT;
 
   function PhpClosure() { }
+
+  /**
+   * Outputs all source files as seperate script file loads without compiling
+   * code when specified sha1 encoded password is passed in as the cookie 'GOD'
+   * or when it === true.
+   * Use for secure debugging.
+   */
+  function godMode($sha1Password) {
+	if ($sha1Password === true || sha1($_COOKIE['GOD']) === $sha1Password ) {
+		foreach ($this->_srcs as $file) {
+			echo "\tdocument.write('<script src=\"" . $file . "?_=" . time() . "\" type=\"text/javascript\"></script>')\n";
+		}
+		exit(0);
+	}
+    return $this;
+  }
 
   /**
    * Adds a source file to the list of files to compile.  Files will be
@@ -229,12 +248,11 @@ class PhpClosure {
   }
 
 	function _jqWrap($txt) {
-		echo "//\n";
-		echo "// ALL CODE COPYRIGHT(c) 2015 NATHAN S. BAWDEN ALL RIGHTS RESERVED\n";
-		echo "// Do not copy, publish, transfer, quote, disassemble, decompile, modify, include, hack or use\n";
-		echo "// in any manner all or any part of this code except as provided for use by the author in webpages\n";
-		echo "// at playnexus.com and playnexus.com subdomains.\n";
-		echo "//\n";
+		if (!empty($this->_copyright)) {
+			echo "//\n";
+			echo trim($this->_copyright) . "\n";
+			echo "//\n";
+		}
 		echo "(function($,undefined) {\n";
 		echo trim($txt);
 		echo "\n})(jQuery);\n";
@@ -527,31 +545,16 @@ function lzw_compress($string) {
 // Now my stuff
 //
 
-// if ($_GET['raw'] === 'true') {
-// 	echo "(function($,undefined) {\n";
-// 	echo file_get_contents('nsb.js');
-// 	echo file_get_contents('x2R-controls.js');
-// 	echo file_get_contents('x2R-stocks.js');
-// 	echo file_get_contents('x2R-xstock.js');
-// 	echo file_get_contents('x2R-xsymbol.js');
-// 	echo file_get_contents('x2R-io.js');
-// 	echo file_get_contents('x2R-finder.js');
-// 	echo "\n})(jQuery);\n";
-// 	exit(0);
-// }
-
 $c = new PhpClosure();
 
-if ($_GET['scuba'] !== 'true')
-	$c->hideDebugInfo();
-	
 if (!file_exists(sys_get_temp_dir() . "/js-cache/"))
 	@mkdir(sys_get_temp_dir() . "/js-cache/");
 
 $c
-	->add("dAc-atom.js")
+	->add("../dAc-atom.js")
 	->add("QUnit.zag.js")
 	->add("QUnit.tests.js")
+	->godMode(false)
 	->advancedMode()
 	->cacheDir(sys_get_temp_dir() . "/js-cache/")
 	->write();
