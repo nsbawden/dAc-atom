@@ -5,4 +5,4 @@ Inspired by John Resig's [Simple JavaScript Inheritance Class](http://ejohn.org/
 
 Also has a few nice helper methods on the base class, such as stringify() and forEach().
 
-UnitTests.html is designed to be accessed on a php webserver and uses QUint to test features after Google Closure Compiling the library and test code together. Compilation happens automatically when the source is loaded via QUnit.source.php.
+test/index.html is designed to be accessed on a php webserver and uses QUint to test features after Google Closure Compiling the library and test code together. Compilation happens automatically when the source is loaded via QUnit.source.php.
