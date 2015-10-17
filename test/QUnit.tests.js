@@ -223,7 +223,7 @@
 		}).explode().stringify();
 		p.strictEqual(x, basicBigAtom, x);
 
-		p.throws(function() {
+		p['throws'](function() {
 			Atom.New('NoAtom');
 		}, 'Creating unregistered Atom kind does throw an error');
 
